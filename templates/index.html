@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<title>Product Order</title>
+<style>
+body {
+ font-family: "Lato", sans-serif;
+ /*  font-family: Arial, Helvetica, sans-serif; */
+}
+
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: red;
+}
+
+
+/* Main content */
+.main {
+  margin-left: 300px; /* Same as the width of the sidenav */
+  font-size: 20px; /* Increased text to enable scrolling */
+  padding: 12px 10px;
+}
+
+.btn {
+    background-color: #105CE5 ;
+    border: none;
+    color: white;
+    padding: 10px 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+.btn2 {
+    background-color: green ;
+    border: none;
+    color: white;
+    padding: 2px 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.btn_danger {
+    background-color: red ;
+    border: none;
+    color: white;
+    padding: 10px 10px; 
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.active {
+  background-color: green;
+  color: white;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  font-size: 18px;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  font-size: 18px;
+  opacity: 1;
+}
+
+
+table {
+    font-family: arial, sans-serif
+    border-collapse: collapse;
+    width: 100%;
+    display: block;
+   /* table-layout: fixed; */
+   /* overflow:auto; */
+    white-space: nowrap;
+}
+td,th 
+{
+  border: 1px solid #dddddd;
+  text-align: left;
+    font-size: 16px;
+     overflow:auto;
+  padding: 8px;
+}
+
+input.larger 
+{
+    transform: scale(2);
+    margin: 0px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.select {
+
+  border: 1px solid;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1.1;
+  background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+}
+
+
+</style>
+</head>
+
+<body>
+    <h1>Customer order management system</h1>
+
+    <font color=red> <h2>{{session.msg}}</h2></font>
+
+{%if session.topic=='sign_up'%}
+  
+    <form action="/sign_up" method="POST" >
+        <b>
+             <p>
+              
+              <input type="submit" name="button"  class="btn" value="Sign Up" >
+             </p>
+             
+             <br>
+             <p>
+                    Email address: &nbsp;&nbsp;&nbsp; <input type="email" name="email" 
+                    value="{{info.email}}" style="font-size : 18px;color:blue" >
+             </p>
+            
+             <br>
+            <p>
+                    Password: &nbsp;&nbsp;&nbsp; <input type="password" name="password" 
+                    value="{{info.email}}" style="font-size : 18px;color:blue" >
+             </p>
+             <br>
+            <p>
+                    <input type="submit" name="button" value="Login" class="btn" >
+            </p>
+            </b>
+    </form>
+        
+ {%endif%}       
+    
+ {%if session.topic=='check_out_order'%}
+    
+    <form action="/check_out_order" method="POST" >   
+     
+        <table readOnly="true">
+            {%for row in info.order_sumary%}
+                <tr>
+                    {% for cell in row %}
+                        <th>{{cell}}</th>
+                    {%endfor%}
+                </tr>
+            {%endfor%}               
+        </table>
+        <p><b>
+         Total to pay: £ {{info.total_to_pay}}
+        </b></p>
+         <p>
+                <input type="submit" name="button" value="Confirm Order" class="btn" >
+                <input type="submit" name="button" value="Cancel" class="btn_danger" >
+        </p>
+    </form>
+        
+ {%endif%}
+ 
+ {%if session.topic=='after_order'%}
+    
+    <form action="/after_order" method="POST" >   
+     
+         <p>
+            <input type="submit" name="button" value="Another Order" class="btn" >
+         </p>
+         <p>
+            <input type="submit" name="button" value="Logout" class="btn_danger" >
+        </p>
+    </form>
+        
+ {%endif%} 
+        
+ {%if session.topic=='place_order'%}
+  
+    <form action="/place_order" method="POST" >
+        <h3>List of items and unit prices</h3>
+        <table readOnly="true">
+            {%for row in info.table1%}
+                <tr>
+                    {% for cell in row %}
+                        <th>{{cell}}</th>
+                    {%endfor%}
+                </tr>
+            {%endfor%}               
+        </table>
+        <h3>Your order</h3>
+        <b>
+          <p>
+            Product Name:&nbsp;&nbsp;
+            <select class="select"  name="product_name" >
+                        <option value="Apples">Apples</option>
+                        <option value="Books">Books</option>
+                        <option value="Car">Car</option>
+                        <option value="Laptop">Laptop</option>
+                        <option value="Desktop">Desktop</option> 
+                        <option value="Bananas">Bananas</option> 
+                        <option selected>{{info.product_name}}</option>
+            </select>
+        </p>
+        <p>
+        Order amount/number:&nbsp;&nbsp;
+         <input type="number" step="any" name="order_amount" style="width: 100px;" value="{{info.order_amount}}"
+        </p>
+        <input type="submit" name="button" value="Add Item" class="btn" >
+        </b>
+        <p>    
+        <input type="submit" name="button" value="Check Out" class="btn" >
+        <input type="submit" name="button" value="Cancel" class="btn" >
+        </p> 
+    </form>
+        
+{%endif%}               
+</body>
